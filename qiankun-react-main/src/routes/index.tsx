@@ -1,22 +1,21 @@
 import { lazy, ReactNode, Suspense } from "react";
-import { RouteObject } from "react-router-dom";
+import { Navigate, RouteObject } from "react-router-dom";
 
-const Counter = lazy(() => import('../controllers/counter/Counter'))
+const Login = lazy(() => import("../pages/Login"));
 
 const LazyLoad = (e: ReactNode): ReactNode => {
-  return (
-    <Suspense fallback={<>loading...</>}>
-      {e}
-    </Suspense>
-  )
-}
-
+  return <Suspense fallback={<>loading...</>}>{e}</Suspense>;
+};
 
 const routes: RouteObject[] = [
   {
-    path: '/',
-    element: LazyLoad(<Counter />)
-  }
-]
+    path: "*",
+    element: <Navigate to="/login" />,
+  },
+  {
+    path: "/login",
+    element: LazyLoad(<Login />),
+  },
+];
 
-export default routes
+export default routes;
