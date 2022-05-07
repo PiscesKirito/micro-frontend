@@ -1,13 +1,26 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./index.scss";
 
 function Login() {
-  const signIn = (value: any) => {
-    console.log(value);
-  };
+  const navigate = useNavigate()
+  const user = window.localStorage.getItem("sao_user");
 
   const [signInFormRef] = Form.useForm();
+  
+  const signIn = (value: any) => {
+    value = JSON.stringify(value)
+    window.localStorage.setItem("sao_user", value)
+    navigate('/')
+  };
+
+  useEffect(() => {
+    if(user) {
+      signInFormRef.setFieldsValue(JSON.parse(user))
+    }
+  })
 
   return (
     <div className="sign">
