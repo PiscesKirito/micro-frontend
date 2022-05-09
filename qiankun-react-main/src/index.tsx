@@ -3,6 +3,7 @@ import App from './App';
 import { store } from './redux/store';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { registerMicroApps, start } from 'qiankun';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
@@ -11,3 +12,14 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </Provider>
   </BrowserRouter>
 );
+
+registerMicroApps([
+  {
+    name: 'vueApp',
+    entry: '//localhost: 8080',
+    container: '#qk_container',
+    activeRule: 'app-vue'
+  }
+])
+
+start()
