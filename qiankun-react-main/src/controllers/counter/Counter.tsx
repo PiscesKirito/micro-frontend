@@ -10,6 +10,7 @@ import {
   selectCount,
 } from './counterSlice';
 import styles from './Counter.module.scss';
+import logo from '../../assets/logo.svg';
 
 function Counter() {
   const count = useAppSelector(selectCount);
@@ -20,6 +21,7 @@ function Counter() {
 
   return (
     <div>
+      <img src={logo} className={styles.App_logo} alt="logo"/>
       <div className={styles.row}>
         <button
           className={styles.button}
