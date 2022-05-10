@@ -6,6 +6,7 @@ import Menu from "../../controllers/Menu";
 import { MenuOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../redux/store";
 import { setUser } from "../../redux/slices/HomeSlice";
+import { start } from "qiankun";
 
 function Home() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ function Home() {
     } else {
       dispatch(setUser(JSON.stringify(user)));
     }
+    start()
   });
 
   return (

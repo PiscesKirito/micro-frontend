@@ -14,7 +14,7 @@ function Menu() {
     <div className="menu">
       <Button onClick={() => {navigate('/')}}>主应用</Button>
       <Button onClick={() => {navigate('/app-vue')}}>Vue</Button>
-      <Button>React</Button>
+      <Button onClick={() => {navigate('/app-react')}}>React</Button>
       <Button type='link' onClick={() => {signOut()}}>注销</Button>
     </div>
   )

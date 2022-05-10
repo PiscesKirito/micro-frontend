@@ -20,6 +20,10 @@ registerMicroApps([
     container: "#qk_container",
     activeRule: "app-vue",
   },
+  {
+    name: "reactApp",
+    entry: "//localhost:8081",
+    container: "#qk_container",
+    activeRule: "app-react",
+  },
 ]);
-
-start();
