@@ -1,11 +1,11 @@
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import { store } from './redux/store';
-import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-import { registerMicroApps, start } from 'qiankun';
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { store } from "./redux/store";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import { registerMicroApps, start } from "qiankun";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <Provider store={store}>
       <App />
@@ -15,11 +15,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 registerMicroApps([
   {
-    name: 'vueApp',
-    entry: '//localhost: 8080',
-    container: '#qk_container',
-    activeRule: 'app-vue'
-  }
-])
+    name: "vueApp",
+    entry: "//localhost:8080",
+    container: "#qk_container",
+    activeRule: "app-vue",
+  },
+]);
 
-start()
+start();
