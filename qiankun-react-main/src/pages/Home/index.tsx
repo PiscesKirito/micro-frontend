@@ -7,11 +7,16 @@ import { MenuOutlined } from "@ant-design/icons";
 import { useAppSelector } from "../../redux/store";
 import { getUser } from "../../redux/slices/HomeSlice";
 import { registerMicroApps, start } from "qiankun";
+import actions from "../../actions";
 
 function Home() {
   const navigate = useNavigate();
 
-  const user = useAppSelector(getUser)
+  const user = useAppSelector(getUser);
+
+  actions.setGlobalState({
+    user: user,
+  });
 
   useEffect(() => {
     if (!user) {
@@ -24,8 +29,8 @@ function Home() {
         container: "#qk_container",
         activeRule: "app-vue",
         props: {
-          user: user
-        }
+          action: actions
+        },
       },
       {
         name: "reactApp",
@@ -33,8 +38,8 @@ function Home() {
         container: "#qk_container",
         activeRule: "app-react",
         props: {
-          user: user
-        }
+          action: actions
+        },
       },
     ]);
 

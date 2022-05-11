@@ -4,7 +4,6 @@ import "./index.scss";
 
 function Demo() {
   const user = useAppSelector(getUser);
-  console.log(typeof user);
 
   return (
     <div className="demo">

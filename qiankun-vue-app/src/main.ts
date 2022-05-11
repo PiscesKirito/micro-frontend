@@ -33,6 +33,10 @@ export async function bootstrap(props: any) {
 export async function mount(props: any) {
   console.log("Vue子应用Mount");
   (window as any).__VUE_DEVTOOLS_HOOK_REPLAY__ = false
+  const user = window.localStorage.getItem('sao_user')
+  if (user) {
+    store.commit('setUser', JSON.parse(user).username)
+  }
   render(props);
 }
 
