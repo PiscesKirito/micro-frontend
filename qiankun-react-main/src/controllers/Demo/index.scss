@@ -1,0 +1,53 @@
+.demo {
+  // position: relative;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .droplets {
+    position: absolute;
+    height: 20vh;
+    width: 10vw;
+    top: 25vh;
+    background: #318cfe;
+    box-shadow: -20px 30px 16px #1b6cfb, -40px 60px 32px #1b6cfb,
+      inset -6px 6px 10px #1b6cfb, inset 2px 6px 10px #1a74e5,
+      inset 20px -20px 22px white, inset 40px -40px 44px #a8ceff;
+  }
+  .droplets::after {
+    content: "";
+    position: absolute;
+    height: 4vh;
+    width: 2vw;
+    background: #e6fdfbc7;
+    left: 6vw;
+    top: 3vh;
+    box-shadow: 1vw 4vh 0 -1vh white;
+  }
+  .droplets1 {
+    left: 22vw;
+    border-radius: 44% 56% 40% 60%/38% 57% 43% 62%;
+  }
+  .droplets1::after {
+    border-radius: 44% 56% 40% 60%/38% 57% 43% 62%;
+  }
+  .droplets2 {
+    right: 22vw;
+    border-radius: 51% 49% 48% 52% / 62% 44% 56% 38%;
+  }
+  .droplets2::after {
+    border-radius: 51% 49% 48% 52% / 62% 44% 56% 38%;
+  }
+  .demo_text {
+    height: 20vh;
+    width: 30vw;
+    margin-top: -30vh;
+    font-size: 6vw;
+    font-family: Huan;
+    color: white;
+    text-shadow: 0 1px hsl(0, 0%, 85%), 0 1px hsl(0, 0%, 80%),
+      0 1px hsl(0, 0%, 75%), 0 1px hsl(0, 0%, 70%), 0 1px hsl(0, 0%, 65%),
+      0 5px 10px black;
+  }
+}

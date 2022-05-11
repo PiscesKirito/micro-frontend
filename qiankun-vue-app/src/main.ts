@@ -6,14 +6,15 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
+let instance: any
+
 function render(props: any) {
   const { container } = props;
   console.log("渲染子应用");
-  console.log(props);
-  createApp(App)
+  instance = createApp(App)
     .use(store)
     .use(router)
-    .mount(container ? container.querySelector("#vue-app") : "#vue-app");
+  instance.mount(container ? container.querySelector("#vue-app") : "#vue-app");
 }
 
 if ((window as any).__POWERED_BY_QIANKUN__) {
@@ -26,13 +27,18 @@ if (!(window as any).__POWERED_BY_QIANKUN__) {
 
 export async function bootstrap(props: any) {
   console.log("Vue子应用Bootstrap");
+  console.log(props)
 }
 
 export async function mount(props: any) {
   console.log("Vue子应用Mount");
+  (window as any).__VUE_DEVTOOLS_HOOK_REPLAY__ = false
   render(props);
 }
 
 export async function unmount(props: any) {
   console.log("Vue子应用Unmount");
+  (window as any).__VUE_DEVTOOLS_HOOK_REPLAY__ = false
+  instance.unmount()
+  instance = null
 }

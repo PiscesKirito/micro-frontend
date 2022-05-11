@@ -2,13 +2,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import LoginReducer from './slices/LoginSlice';
 import HomeReducer from './slices/HomeSlice';
-import counterReducer from '../controllers/counter/counterSlice';
 
 export const store = configureStore({
   reducer: {
     login: LoginReducer,
     home: HomeReducer,
-    counter: counterReducer,
   },
 });
 

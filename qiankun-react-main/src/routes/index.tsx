@@ -1,7 +1,7 @@
 import { lazy, ReactNode, Suspense } from "react";
 import { RouteObject } from "react-router-dom";
 
-const Count = lazy(() => import("../controllers/counter/Counter"));
+const Demo = lazy(() => import("../controllers/Demo"));
 const Login = lazy(() => import("../pages/Login"));
 const Home = lazy(() => import("../pages/Home"));
 
@@ -16,7 +16,7 @@ const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: LazyLoad(<Count />)
+        element: LazyLoad(<Demo />)
       }
     ]
   },

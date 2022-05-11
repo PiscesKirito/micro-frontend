@@ -1,26 +1,34 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { setUser } from "../../redux/slices/HomeSlice";
+import { useAppDispatch } from "../../redux/store";
 import "./index.scss";
 
 function Login() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const user = window.localStorage.getItem("sao_user");
 
   const [signInFormRef] = Form.useForm();
-  
+
+  const [remember, setRemember] = useState(user ? true : false);
+
   const signIn = (value: any) => {
-    value = JSON.stringify(value)
-    window.localStorage.setItem("sao_user", value)
-    navigate('/')
+    let str_value = JSON.stringify(value);
+    if (remember) {
+      window.localStorage.setItem("sao_user", str_value);
+    }
+    dispatch(setUser(value.username));
+    navigate("/");
   };
 
   useEffect(() => {
-    if(user) {
-      signInFormRef.setFieldsValue(JSON.parse(user))
+    if (user) {
+      signInFormRef.setFieldsValue(JSON.parse(user));
     }
-  })
+  });
 
   return (
     <div className="sign">
@@ -43,7 +51,14 @@ function Login() {
             />
           </Form.Item>
         </Form>
-        <Checkbox>记住我</Checkbox>
+        <Checkbox
+          checked={remember}
+          onChange={(e) => {
+            setRemember(e.target.checked);
+          }}
+        >
+          记住我
+        </Checkbox>
         <br />
         <Button
           className="sign_in_submit"

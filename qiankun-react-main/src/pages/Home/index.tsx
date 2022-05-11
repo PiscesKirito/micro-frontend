@@ -4,23 +4,41 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { Button, Popover } from "antd";
 import Menu from "../../controllers/Menu";
 import { MenuOutlined } from "@ant-design/icons";
-import { useAppDispatch } from "../../redux/store";
-import { setUser } from "../../redux/slices/HomeSlice";
-import { start } from "qiankun";
+import { useAppSelector } from "../../redux/store";
+import { getUser } from "../../redux/slices/HomeSlice";
+import { registerMicroApps, start } from "qiankun";
 
 function Home() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
-  const user = window.localStorage.getItem("sao_user");
+  const user = useAppSelector(getUser)
 
   useEffect(() => {
     if (!user) {
       navigate("/login");
-    } else {
-      dispatch(setUser(JSON.stringify(user)));
     }
-    start()
+    registerMicroApps([
+      {
+        name: "vueApp",
+        entry: "//localhost:8080",
+        container: "#qk_container",
+        activeRule: "app-vue",
+        props: {
+          user: user
+        }
+      },
+      {
+        name: "reactApp",
+        entry: "//localhost:8081",
+        container: "#qk_container",
+        activeRule: "app-react",
+        props: {
+          user: user
+        }
+      },
+    ]);
+
+    start();
   });
 
   return (
