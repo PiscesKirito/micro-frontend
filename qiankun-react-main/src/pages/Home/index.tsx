@@ -25,18 +25,18 @@ function Home() {
     registerMicroApps([
       {
         name: "vueApp",
-        entry: "//localhost:8080",
+        entry: "http://39.105.145.237:8081/",
         container: "#qk_container",
-        activeRule: "app-vue",
+        activeRule: "/app-vue",
         props: {
           action: actions
         },
       },
       {
         name: "reactApp",
-        entry: "//localhost:8081",
+        entry: "http://39.105.145.237:8082/",
         container: "#qk_container",
-        activeRule: "app-react",
+        activeRule: "/app-react",
         props: {
           action: actions
         },

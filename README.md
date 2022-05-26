@@ -62,8 +62,9 @@ const routes: RouteObject[] = [
   },
 ];
 ```
-
+## 配置子应用微前端服务
 ### 子应用-修改 webpack public path
+`该文件将决定主应用是否能准确获取到子应用的静态资源文件`
 
 `添加文件 src/public-path.ts`
 
@@ -79,6 +80,7 @@ if ((window as any).__POWERED_BY_QIANKUN__) {
 `React子应用 src/index.js`
 
 ```js
+import "./public-path";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
@@ -127,7 +129,7 @@ export async function unmount(props) {
 ```ts
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import "./public-path.js";
+import "./public-path";
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
@@ -169,9 +171,102 @@ export async function unmount(props: any) {
 }
 ```
 
-### 父子应用通信
+### 路由改写 ###
+`这将影响子应用的路由导航是否会修改父应用原本的路由`
 
-#### 方法1：Qiankun官网有给出GlobalState API用于父子组件传递监听，但其将在Qiankun 3.0版本中弃用 ####
+`React子应用`
+```js
+<BrowserRouter basename={window.__POWERED_BY_QIANKUN__ ? '/app-react/' : '/'}>
+  <App user={user}/>
+</BrowserRouter>
+```
+
+`Vue子应用`
+```ts
+const router = createRouter({
+  // history: createWebHistory(process.env.BASE_URL),
+  // eslint-disable-next-line
+  history: createWebHistory((window as any).__POWERED_BY_QIANKUN__?'/app-vue/':'/'),
+  routes,
+});
+```
+
+### 修改webpack输出 && 利用webpack实现开发环境跨域 ###
+`React子应用`
+
+`安装react-app-rewired`
+```sh
+npm install react-app-rewired
+```
+
+`根目录下创建config-overrides.js`
+```js
+const { name } = require('./package');
+module.exports = {
+  webpack: (config) => {
+    config.output.library = `${name}-[name]`;
+    config.output.libraryTarget = 'umd';
+    // Qiankun官方文档给出的jsonpFunction在webpack5.0时替换为chunkLoadingGlobal
+    config.output.chunkLoadingGlobal = `webpackJsonp_${name}`; 
+    config.output.globalObject = 'window';
+    return config
+  },
+  devServer: (configFunction) => {
+    return function(proxy, allowedHost) {
+      const config = configFunction(proxy, allowedHost)
+      config.headers = {
+        'Access-Control-Allow-Origin': '*'
+      }
+      return config
+    }
+  }
+}
+```
+`Vue子应用`
+
+`修改vue.config.js`
+```js
+const { defineConfig } = require('@vue/cli-service')
+const { name } = require('./package.json')
+module.exports = defineConfig({
+  transpileDependencies: true
+})
+module.exports = {
+  publicPath: "./", //基本路径
+  outputDir: "dist", //构建时的输出目录
+  assetsDir: "static", //放置静态资源的目录
+  indexPath: "index.html", //html 的输出路径
+  filenameHashing: true, //文件名哈希值
+  lintOnSave: true, //是否在保存的时候使用 `eslint-loader` 进行检查。
+
+  //组件是如何被渲染到页面中的？ （ast：抽象语法树；vDom：虚拟DOM）
+  //template ---> ast ---> render ---> vDom ---> 真实的Dom ---> 页面
+  //runtime-only：将template在打包的时候，就已经编译为render函数
+  //runtime-compiler：在运行的时候才去编译template
+  runtimeCompiler: false,
+
+  transpileDependencies: [], //babel-loader 默认会跳过 node_modules 依赖。
+  productionSourceMap: false, //是否为生产环境构建生成 source map？
+
+  configureWebpack: {
+    output: {
+      // 把子应用打包成 umd 库格式
+      library: `${name}-[name]`,
+      libraryTarget: "umd",
+      // Qiankun官方文档给出的jsonpFunction在webpack5.0时替换为chunkLoadingGlobal
+      chunkLoadingGlobal: `webpackJsonp_${name}`,
+    },
+  },
+  devServer: {
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    }
+  },
+}
+```
+## 父子应用通信 ##
+
+### 方法1：Qiankun官网有给出GlobalState API用于父子组件传递监听，但其将在Qiankun 3.0版本中弃用 ###
 `父应用中添加 src/actions`
 
 ```ts
@@ -241,7 +336,7 @@ export async function mount(props) {
 }
 ```
 
-#### 方法2：通过在主应用中注册微前端子应用时的props ####
+### 方法2：通过在主应用中注册微前端子应用时的props ###
 
 ```ts
 registerMicroApps([
@@ -256,4 +351,37 @@ registerMicroApps([
 start();
 ```
 
-#### 方法3： 通过Storage传值 ####
+### 方法3： 通过Storage传值 ###
+
+## Nginx的配置 ##
+### 部署·跨域 ###
+推荐由[Nginx自动配置网站](https://nginxconfig.io/)自动生成nginx配置文件
+
+`子应用-nginx.conf`
+```sh
+# security headers
+add_header X-XSS-Protection        "1; mode=block" always;
+add_header X-Content-Type-Options  "nosniff" always;
+add_header Referrer-Policy         "no-referrer-when-downgrade" always;
+add_header Content-Security-Policy "default-src 'self' http: https: ws: wss: data: blob: 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self';" always;
+# 跨域设置
+add_header Cache-Control no-cache;
+add_header Access-Control-Allow-Origin *;
+add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
+add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
+
+if ($request_method = 'OPTIONS') {
+    return 204;
+}
+
+location / {  
+  try_files $uri /index.html;
+} 
+
+# . files
+location ~ /\.(?!well-known) {
+    deny all;
+}
+```
+
+`若还想通过父应用的反向代理来实现访问子应用，还需配置父子应用容器的网段`

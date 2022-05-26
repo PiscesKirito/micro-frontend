@@ -1,3 +1,4 @@
+import './public-path'
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from "react-router-dom";
@@ -9,7 +10,7 @@ function render(props, user) {
   const { container } = props
   instance = ReactDOM.createRoot(container ? container.querySelector('#react-app') : document.querySelector('#react-app'))
   instance.render(
-    <BrowserRouter basename={window.__POWERED_BY_QIANKUN__ ? '/app-react' : '/'}>
+    <BrowserRouter basename={window.__POWERED_BY_QIANKUN__ ? '/app-react/' : '/'}>
       <App user={user}/>
     </BrowserRouter>
   );

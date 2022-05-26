@@ -20,7 +20,8 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   // history: createWebHistory(process.env.BASE_URL),
-  history: createWebHistory("/app-vue"),
+  // eslint-disable-next-line
+  history: createWebHistory((window as any).__POWERED_BY_QIANKUN__?'/app-vue/':'/'),
   routes,
 });
 

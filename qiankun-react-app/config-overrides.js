@@ -1,8 +1,10 @@
+const { name } = require('./package');
 module.exports = {
   webpack: (config) => {
-    config.output.library = 'react-app'
-    config.output.libraryTarget = 'umd'
-    config.output.publicPath = 'http://localhost:8081/'
+    config.output.library = `${name}-[name]`;
+    config.output.libraryTarget = 'umd';
+    config.output.chunkLoadingGlobal = `webpackJsonp_${name}`;
+    config.output.globalObject = 'window';
     return config
   },
   devServer: (configFunction) => {
